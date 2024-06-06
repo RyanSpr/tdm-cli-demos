@@ -1,0 +1,1 @@
+anonymize classify --database-engine SqlServer --connection-string "Server=WIN2016;Database=Eastwind_Subset;Trusted_Connection=yes;TrustServerCertificate=yes" --classification-file classification.json --output-all-columns --output-schema-file

@@ -1,0 +1,133 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://www.red-gate.com/test-data-management/classification.schema.json",
+  "title": "Root",
+  "description": "A TDM classification file",
+  "type": "object",
+  "properties": {
+    "tables": {
+      "description": "A table in the database.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/table"
+      }
+    }
+  },
+  "definitions": {
+    "table": {
+      "type": "object",
+      "required": [
+        "schema",
+        "name"
+      ],
+      "properties": {
+        "schema": {
+          "description": "The schema of the table.",
+          "type": "string"
+        },
+        "name": {
+          "description": "The name of the table.",
+          "type": "string"
+        },
+        "exclude": {
+          "description": "Whether the table should be excluded from masking.",
+          "type": "boolean"
+        },
+        "preserveNulls": {
+          "description": "Whether to preserve null values in the columns of this table when masking.",
+          "type": "boolean"
+        },
+        "columns": {
+          "description": "The columns in the table.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/column"
+          }
+        },
+        "constraints": {
+          "description": "The constraints in the table.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/constraint"
+          }
+        }
+      }
+    },
+    "column": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "description": "The name of the column.",
+          "type": "string"
+        },
+        "exclude": {
+          "description": "Whether the column should be excluded from masking.",
+          "type": "boolean"
+        },
+        "preserveNulls": {
+          "description": "Whether to preserve null values when masking.",
+          "type": "boolean"
+        },
+        "type": {
+          "description": "The classification of the column. This can be a built-in classification or a custom classification. For a list of built-in classifications, see https://www.red-gate.com/solutions/test-data-management/anonymization/defaults",
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "string",
+              "enum": [
+                "GivenNames",
+                "FamilyNames",
+                "FullNames",
+                "DatesOfBirth",
+                "StreetAddresses",
+                "Cities",
+                "UKCounties",
+                "Countries",
+                "PostCodes",
+                "ZipCodes",
+                "PhoneNumbers",
+                "EmailAddresses",
+                "IPAddresses",
+                "UKNationalInsuranceNumbers",
+                "USSocialSecurityNumbers",
+                "PassportNumbers",
+                "CreditCardNumbers"
+              ]
+            }
+          ]
+        },
+        "maxLength": {
+          "description": "The maximum length of the column.",
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "constraint": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The type of constraint.",
+          "enum": [
+            "Unique"
+          ]
+        },
+        "columns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

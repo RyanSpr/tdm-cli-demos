@@ -1,0 +1,1 @@
+DataGenerator --database-engine=sqlserver --target-connection-string="Server=WIN2016;Database=Eastwind_Synthesised;Trusted_Connection=yes;TrustServerCertificate=yes" --rows-to-generate 1

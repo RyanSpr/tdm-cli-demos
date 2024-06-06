@@ -1,0 +1,305 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://www.red-gate.com/test-data-management/options.schema.json",
+  "title": "Root",
+  "description": "A TDM anonymization options file",
+  "type": "object",
+  "properties": {
+    "settings": {
+      "description": "The settings to be used when anonymizing.",
+      "type": "object",
+      "properties": {
+        "masking": {
+          "description": "Settings applicable only for masking.",
+          "type": "object",
+          "properties": {
+            "dateTimeFormats": {
+              "description": "A list of formats to be used when masking date and time columns when stored strings.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "classifications": {
+      "description": "The classifications to be used when classifying.",
+      "type": "object",
+      "properties": {
+        "builtIn": {
+          "description": "Built-in classifications.",
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "description": "Whether built-in classifications are enabled.",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/builtInTypes"
+              }
+            },
+            "disabled": {
+              "description": "Whether built-in classifications are disabled.",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/builtInTypes"
+              }
+            }
+          }
+        },
+        "custom": {
+          "description": "Custom classifications.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/rules"
+          }
+        }
+      }
+    },
+    "tables": {
+      "description": "A table in the database.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/table"
+      }
+    },
+    "datasets": {
+      "description": "Custom datasets to be used when masking.",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/dataset"
+      }
+    }
+  },
+  "definitions": {
+    "table": {
+      "type": "object",
+      "required": [
+        "schema",
+        "name"
+      ],
+      "properties": {
+        "schema": {
+          "description": "The schema of the table.",
+          "type": "string"
+        },
+        "name": {
+          "description": "The name of the table.",
+          "type": "string"
+        },
+        "exclude": {
+          "description": "Whether the table should be excluded from masking.",
+          "type": "boolean"
+        },
+        "preserveNulls": {
+          "description": "Whether to preserve null values in the columns of this table when masking.",
+          "type": "boolean"
+        },
+        "columns": {
+          "description": "The columns in the table.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/column"
+          }
+        },
+        "constraints": {
+          "description": "The constraints in the table.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/constraint"
+          }
+        }
+      }
+    },
+    "column": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "description": "The name of the column.",
+          "type": "string"
+        },
+        "exclude": {
+          "description": "Whether the column should be excluded from masking.",
+          "type": "boolean"
+        },
+        "preserveNulls": {
+          "description": "Whether to preserve null values when masking.",
+          "type": "boolean"
+        },
+        "type": {
+          "description": "The classification of the column. This can be a built-in classification or a custom classification. For a list of built-in classifications, see https://www.red-gate.com/solutions/test-data-management/anonymization/defaults",
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/definitions/builtInTypes"
+            }
+          ]
+        },
+        "dataset": {
+          "description": "The classification of the column. This can be a built-in dataset or a custom dataset. For a list of built-in datasets, see https://www.red-gate.com/solutions/test-data-management/anonymization/defaults",
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/definitions/builtInDatasets"
+            }
+          ]
+        },
+        "deterministic": {
+          "description": "Whether the column is masked deterministically.",
+          "type": "boolean",
+          "default": false
+        },
+        "maxLength": {
+          "description": "The maximum length of the column.",
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "constraint": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The type of constraint.",
+          "enum": [
+            "Unique"
+          ]
+        },
+        "columns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "dataset": {
+      "type": "object",
+      "required": [
+        "name",
+        "type"
+      ],
+      "properties": {
+        "name": {
+          "description": "The name of the dataset. To override the behavior of a built-in dataset, the name must match the name of the built-in dataset. For a list of built-in datasets, see https://www.red-gate.com/solutions/test-data-management/anonymization/defaults",
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/definitions/builtInDatasets"
+            }
+          ]
+        },
+        "type": {
+          "description": "The type of the dataset.",
+          "type": "string",
+          "enum": [
+            "Pattern",
+            "List",
+            "File"
+          ],
+          "default": "Pattern"
+        },
+        "values": {
+          "description": "The values in the dataset.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "file": {
+          "description": "The file containing the dataset values.",
+          "type": "string"
+        }
+      }
+    },
+    "builtInTypes": {
+      "type": "string",
+      "enum": [
+        "GivenNames",
+        "FamilyNames",
+        "FullNames",
+        "DatesOfBirth",
+        "StreetAddresses",
+        "Cities",
+        "UKCounties",
+        "Countries",
+        "PostCodes",
+        "ZipCodes",
+        "PhoneNumbers",
+        "EmailAddresses",
+        "IPAddresses",
+        "UKNationalInsuranceNumbers",
+        "USSocialSecurityNumbers",
+        "PassportNumbers",
+        "CreditCardNumbers"
+      ]
+    },
+    "builtInDatasets": {
+      "type": "string",
+      "enum": [
+        "GivenNames",
+        "FamilyNames",
+        "FullNames",
+        "DatesOfBirth",
+        "StreetAddresses",
+        "Cities",
+        "UKCounties",
+        "USStates",
+        "Countries",
+        "PostCodes",
+        "ZipCodes",
+        "PhoneNumbers",
+        "EmailAddresses",
+        "IPAddresses",
+        "UKNationalInsuranceNumbers",
+        "USSocialSecurityNumbers",
+        "PassportNumbers",
+        "CreditCardNumbers",
+        "NullValue",
+        "EmptyValue",
+        "LoremIpsum"
+      ]
+    },
+    "rules": {
+      "type": "object",
+      "required": [
+        "type",
+        "condition"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The classification type"
+        },
+        "confidence": {
+          "type": "string",
+          "description": "The confidence level of the classification, default to High if not specified",
+          "enum": [
+            "High",
+            "Medium",
+            "Low"
+          ]
+        },
+        "condition": {
+          "type": "string",
+          "description": "The condition to be met for the classification to be applied"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,1 @@
+sqlcmd -S WIN2016 -d Eastwind -E -Q "DBCC CLONEDATABASE (Eastwind, Eastwind_Subset) WITH VERIFY_CLONEDB; ALTER DATABASE Eastwind_Subset SET READ_WRITE;"

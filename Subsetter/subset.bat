@@ -1,0 +1,1 @@
+subsetter --database-engine=sqlserver --source-connection-string="Server=WIN2016;Database=Eastwind;Trusted_Connection=yes;TrustServerCertificate=yes" --target-connection-string="Server=WIN2016;Database=Eastwind_Subset;Trusted_Connection=yes;TrustServerCertificate=yes" --starting-table="dbo.Employees" --filter-clause="EmployeeID > 6"
